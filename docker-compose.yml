@@ -1,0 +1,30 @@
+networks:
+  izhsintez-barcodes-network:
+    name: izhsintez-barcodes-network
+
+
+services:
+  izhsintez-barcodes-nginx:
+    container_name: izhsintez-barcodes-nginx
+    image: nginx
+    ports:
+      - '3351:80'
+    volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./www:/var/www/
+    networks:
+      - izhsintez-barcodes-network 
+    depends_on:
+      - izhsintez-barcodes-php     
+
+  izhsintez-barcodes-php:
+    container_name: izhsintez-barcodes-php
+    image: php:8.1-fpm
+    working_dir: /var/www/public_html
+    volumes:
+      - ./www:/var/www/
+      - ./public_html:/var/www/public_html
+    networks:
+      - izhsintez-barcodes-network
+    ports:
+      - '9000'    
