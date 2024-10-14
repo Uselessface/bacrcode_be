@@ -1,11 +1,23 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-    var_dump($_POST, $_REQUEST, file_get_contents("php://input"));
-    $data = $_POST;
-    $serializedData = serialize($data);
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
-    $filename = __DIR__ . '/barcodes.txt';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents("php://input"), true);
+    // Проверьте, действительно ли вы получаете данные
+    var_dump($data);
+    // Обработка данных
+    echo json_encode(['message' => 'POST-запрос обработан!', 'data' => $data]);
+    exit();
+}
 
-    file_put_contents($filename, $serializedData, FILE_APPEND|LOCK_EX)
+// Если метод не поддерживается
+http_response_code(405);
+echo json_encode(['error' => 'Метод не разрешен']);
 ?>
- 
